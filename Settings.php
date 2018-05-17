@@ -70,6 +70,12 @@ class AADSSO_Settings {
 	*/
 	public $enable_auto_provisioning = false;
 
+	/**
+	 * Default user to logged-in if AAD user does not match with a WordPress user
+	 *
+	 * @var string The default WordPress User for AAD logged-in user on WordPress.
+	 */
+	public $default_wp_user = null;
 
 	/**
 	* Indicates if unauthenticated users are automatically redirecteded to AAD for login, instead of
@@ -162,6 +168,7 @@ class AADSSO_Settings {
 			'field_to_match_to_upn' => 'email',
 			'default_wp_role' => null,
 			'enable_auto_provisioning' => false,
+			'default_wp_user' => null,
 			'match_on_upn_alias' => false,
 			'enable_auto_forward_to_aad' => false,
 			'enable_aad_group_to_wp_role' => false,
