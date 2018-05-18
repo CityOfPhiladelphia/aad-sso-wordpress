@@ -642,18 +642,32 @@ class AADSSO {
 	 */
 	function print_login_css() {
 		wp_enqueue_style( AADSSO, AADSSO_PLUGIN_URL . '/login.css' );
+		if ( $this->settings->hide_default_wp_login_fields ) {
+			wp_enqueue_style( AADSSO . '-hide-default', AADSSO_PLUGIN_URL . '/login-hide-default.css' );
+		}
 	}
 
 	/**
 	 * Renders the link used to initiate the login to Azure AD.
 	 */
 	function print_login_link() {
-		$html = '<p class="aadsso-login-form-text">';
-		$html .= '<a href="%s">';
-		$html .= sprintf( __( 'Sign in with your %s account', 'aad-sso-wordpress' ),
-		                  htmlentities( $this->settings->org_display_name ) );
-		$html .= '</a><br /><a class="dim" href="%s">'
-		         . __( 'Sign out', 'aad-sso-wordpress' ) . '</a></p>';
+		if ( $this->settings->hide_default_wp_login_fields ) {
+			$html = '<div class="aadsso-login-form-text hidden-login">';
+			$html .= '<strong>'.sprintf( __( '<small>Sign in with your</small><br>%s<br><small>account</small>', 'aad-sso-wordpress' ),
+							htmlentities( $this->settings->org_display_name ) ) . '</strong>';
+			$html .= '<p><a class="wp-core-ui button-primary" href="%s">';
+			$html .= 'Sign in';
+			$html .= '</a></p><br /><a class="dim" href="%s">'
+					. __( 'Sign out', 'aad-sso-wordpress' ) . '</a></div>';
+		}  else {
+			$html = '<p class="aadsso-login-form-text">';
+			$html .= '<a href="%s">';
+			$html .= sprintf( __( 'Sign in with your %s account', 'aad-sso-wordpress' ),
+							htmlentities( $this->settings->org_display_name ) );
+			$html .= '</a><br /><a class="dim" href="%s">'
+					. __( 'Sign out', 'aad-sso-wordpress' ) . '</a></p>';
+		}
+
 		printf(
 			$html,
 			$this->get_login_url(),

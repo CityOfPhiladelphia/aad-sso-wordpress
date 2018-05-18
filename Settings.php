@@ -153,6 +153,11 @@ class AADSSO_Settings {
 	public $graph_version = '1.6';
 
 	/**
+	 * @var string Hide Normal WordPress login options
+	 */
+	public $hide_default_wp_login_fields = false;
+
+	/**
 	 * Returns a sensible set of defaults for the plugin.
 	 *
 	 * If key is provided, only that default is returned.
@@ -172,6 +177,7 @@ class AADSSO_Settings {
 			'match_on_upn_alias' => false,
 			'enable_auto_forward_to_aad' => false,
 			'enable_aad_group_to_wp_role' => false,
+			'hide_default_wp_login_fields' => false,
 			'redirect_uri' => wp_login_url(),
 			'logout_redirect_uri' => wp_login_url(),
 			'openid_configuration_endpoint' => 'https://login.microsoftonline.com/common/.well-known/openid-configuration',

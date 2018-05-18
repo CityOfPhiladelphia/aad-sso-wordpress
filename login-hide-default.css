@@ -1,0 +1,19 @@
+.login {
+    
+}
+.login .hidden-login strong {
+    font-size: 1.5rem;
+    font-weight: 400;
+    line-height: 130%;
+}
+.login .hidden-login strong small {
+    font-size: 14px;
+    font-weight: 300;
+}
+.login .hidden-login p .button-primary {
+    float: none !important;
+    margin: 1rem 0;
+}
+.login input, .login label {
+    display: none !important;
+}

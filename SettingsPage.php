@@ -210,6 +210,14 @@ class AADSSO_Settings_Page {
 		);
 
 		add_settings_field(
+			'hide_default_wp_login_fields', // id
+			__( 'Hide default WordPress Login', 'aad-sso-wordpress' ), // title
+			array( $this, 'hide_default_wp_login_fields_callback' ), // callback
+			'aadsso_settings_page', // page
+			'aadsso_settings_general' // section
+		);
+
+		add_settings_field(
 			'org_domain_hint', // id
 			__( 'Domain hint', 'aad-sso-wordpress' ), // title
 			array( $this, 'org_domain_hint_callback' ), // callback
@@ -407,6 +415,7 @@ class AADSSO_Settings_Page {
 			'enable_aad_group_to_wp_role',
 			'match_on_upn_alias',
 			'enable_full_logout',
+			'hide_default_wp_login_fields'
 		);
 		foreach ( $boolean_settings as $boolean_setting )
 		{
@@ -492,6 +501,17 @@ class AADSSO_Settings_Page {
 		printf(
 			'<p class="description">%s</p>',
 			__( 'Display Name will be shown on the WordPress login screen.', 'aad-sso-wordpress' )
+		);
+	}
+
+	/**
+	 * Renders the `hide_default_wp_login_fields_callback` checkbox control.
+	 */
+	public function hide_default_wp_login_fields_callback() {
+		$this->render_checkbox_field(
+			'hide_default_wp_login_fields',
+			__( 'Hide default WordPress login inputs and login button.',
+				'aad-sso-wordpress' )
 		);
 	}
 
