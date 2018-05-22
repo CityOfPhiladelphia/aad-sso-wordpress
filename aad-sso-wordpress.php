@@ -207,6 +207,18 @@ class AADSSO {
 			$redirect_to = $_SESSION['aadsso_redirect_to'];
 		}
 
+		//is there a user to check?
+		if ( is_a( $user, 'WP_User' ) ) {
+			// Is Subscriber?
+			if ( isset( $user->roles ) && is_array( $user->roles ) && in_array( 'subscriber', $user->roles ) ) {
+				$redirect_to =  home_url();
+			}
+
+			if ( $user->data->user_login === $this->settings->default_wp_user ) {
+				$redirect_to =  home_url();
+			}
+		}
+
 		return $redirect_to;
 	}
 
