@@ -45,6 +45,15 @@ class AADSSO {
 	private $settings = null;
 
 	public function __construct( $settings ) {
+
+		if ( ! empty( $settings->redirect_uri ) ) {
+			$settings->redirect_uri = self::set_current_protocol_to_uri( $settings->redirect_uri );
+		}
+
+		if ( ! empty( $settings->logout_redirect_uri ) ) {
+			$settings->logout_redirect_uri = self::set_current_protocol_to_uri( $settings->logout_redirect_uri );
+		}
+
 		$this->settings = $settings;
 
 		// Setup the admin settings page
@@ -93,6 +102,24 @@ class AADSSO {
 
 		// Register the textdomain for localization after all plugins are loaded
 		add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );
+
+		// Check activation login transient and print it
+		add_action( 'admin_notices', array( 'AADSSO', 'activation_messages' ) );
+	}
+
+	/**
+	 * HTTPS Plugin Recomendation
+	 */
+	public static function activation_messages() {
+		/* Check transient, if available display notice */
+    	if( get_transient( 'phila-admin-notice-aadsso-activation' ) ){
+		?>
+		<div class="notice notice-success is-dismissible">
+			<p><?php _e( 'We highly recommend that you force HTTPS on this site either using a WordPress plugin or by server configuration', AADSSO ) ?></p>
+		</div>
+		<?php
+			delete_transient( 'phila-admin-notice-aadsso-activation' );
+		}
 	}
 
 	/**
@@ -103,6 +130,9 @@ class AADSSO {
 		if ( null === $stored_settings ) {
 			update_option( 'aadsso_settings', AADSSO_Settings::get_defaults() );
 		}
+
+		// Recommend HTTPS Plugin.
+		set_transient( 'phila-admin-notice-aadsso-activation', true, 5 );
 	}
 
 	/**
@@ -120,6 +150,13 @@ class AADSSO {
 			false, // deprecated
 			dirname( plugin_basename( __FILE__ ) ) . '/languages/'
 		);
+	}
+
+	public static function set_current_protocol_to_uri( $url ) {
+		$protocol = ( is_ssl() ) ? 'https:' : 'http:';
+		$url = preg_replace("/^http:/i", $protocol, $url);
+		$url = preg_replace("/^https:/i", $protocol, $url);
+		return $url;
 	}
 
 	/**
@@ -171,7 +208,7 @@ class AADSSO {
 		/*
 		 * If the user is attempting to log out AND the auto-forward to AAD
 		 * login is set then we need to ensure we do not auto-forward the user and get
-		 * them stuck in an infinite logout loop.
+		 * them stuck in an infinite logout loop
 		 */
 		if( $this->wants_to_login() ) {
 
@@ -211,11 +248,11 @@ class AADSSO {
 		if ( is_a( $user, 'WP_User' ) ) {
 			// Is Subscriber?
 			if ( isset( $user->roles ) && is_array( $user->roles ) && in_array( 'subscriber', $user->roles ) ) {
-				$redirect_to =  home_url();
+				$redirect_to = self::set_current_protocol_to_uri( home_url() );
 			}
 
 			if ( $user->data->user_login === $this->settings->default_wp_user ) {
-				$redirect_to =  home_url();
+				$redirect_to = self::set_current_protocol_to_uri( home_url() );
 			}
 		}
 
@@ -571,7 +608,7 @@ class AADSSO {
 		// logout_redirect_uri is not a required setting, use default value if none is set
 		$logout_redirect_uri = $this->settings->logout_redirect_uri;
 		if ( empty( $logout_redirect_uri ) ) {
-			$logout_redirect_uri = AADSSO_Settings::get_defaults('logout_redirect_uri');
+			$logout_redirect_uri = $self::set_current_protocol_to_uri( AADSSO_Settings::get_defaults('logout_redirect_uri') );
 		}
 
 		return $this->settings->end_session_endpoint
@@ -682,7 +719,7 @@ class AADSSO {
 		printf(
 			$html,
 			$this->get_login_url(),
-			$this->get_logout_url()
+			wp_logout_url()
 		);
 	}
 
