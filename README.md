@@ -1,5 +1,6 @@
 # phila-aad-sso-wordpress
 Single Sign-on with Azure Active Directory (for WordPress)
+
 **ORIGINAL DOCUMENTATION IN THE */doc/* folder**
 
 ## Changes after plugin fork.
