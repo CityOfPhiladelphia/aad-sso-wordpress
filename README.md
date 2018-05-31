@@ -1,5 +1,6 @@
 # phila-aad-sso-wordpress
 Single Sign-on with Azure Active Directory (for WordPress)
+**ORIGINAL DOCUMENTATION IN THE */doc/* folder**
 
 ## Changes after plugin fork.
 * Now you can hide the regular WordPress login inputs (username and password), so everything has to use the OAuth2 Login with ADFS. The configuration option for this is *Hide default WordPress Login*.
